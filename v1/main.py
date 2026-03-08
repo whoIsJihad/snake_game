@@ -137,8 +137,8 @@ def game_render(game,window):
 
 def terminate_render(game,window,score):
     font = pygame.font.Font(None, 50)
-    ended = font.render("GAME ENDED !", True,BLACK)
-    score = font.render(f"SCORE : {score} !", True,BLACK)
+    ended = font.render("GAME ENDED ", True,BLACK)
+    score = font.render(f"SCORE : {score} ", True,BLACK)
     window.blit(ended, (200, 240))
     window.blit(score, (200, 280))
 # initializing imported module
@@ -148,9 +148,10 @@ window=pygame.display.set_mode((WINDOW_SIZE,WINDOW_SIZE))
 window.fill((255,255,255))   # white background
 running = True
 clock=pygame.time.Clock()
-
+elapsed=0
+interval=400
 while running:
-
+    dt=clock.tick(60)
     for event in pygame.event.get():
         
         # if event is of type quit then 
@@ -159,8 +160,13 @@ while running:
             running = False
         else :
             game.snake.handle_input(event)
-            
-    game.snake.update_position()
+    if elapsed>interval :
+        elapsed=0
+        interval=interval*0.99
+        game.snake.update_position()
+    else :
+        elapsed+=dt
+
     game.check_food_hit()
     game_render(game,window)
     if game.check_collision()==True:
@@ -170,4 +176,4 @@ while running:
         running=False
     pygame.display.update()
 
-    clock.tick(10)
+    
